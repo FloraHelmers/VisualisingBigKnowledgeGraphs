@@ -2,6 +2,8 @@
 by Flora Helmers and Mahsa Niazi
 
 ## Description
+goal :visualize big knowledge graphs
+focus on the layout
 
 
 ## Table of Content
