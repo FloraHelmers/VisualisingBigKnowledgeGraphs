@@ -1,3 +1,12 @@
+Questions to D.Coeurjolly : 
+- how to add a label to each node ? 
+
+
+Structure of the code 
+
+
+
+
 
 [v] do a short survey about codes already existing on the web for 3D visualisation -> we have polyscope lets just use that
 [] chose a graph test
@@ -20,3 +29,10 @@ the algorithm to implement : https://www2.cs.arizona.edu/~kobourov/grip_demo.pdf
 second idea : https://aaronquigley.org/wp-content/uploads/2019/03/Fade-2000-aquigley.pdf -> pb only 2D
 
 third idea : check KG embeddings and do 3D projections to see how it goes
+
+storage technique  : https://www.rdfhdt.org/manual-of-the-c-hdt-library/
+	-> provides https://www.rdfhdt.org/datasets/ 
+	
+	
+https://wires.onlinelibrary.wiley.com/doi/10.1002/wics.1343
+
