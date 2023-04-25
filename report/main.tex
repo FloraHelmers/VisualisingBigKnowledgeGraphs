@@ -1,5 +1,13 @@
 \documentclass{article}
 
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+\bibliography{biblio}
+
+
 \title{Visualisation of big knowledge graphs}
 \author{Flora Helmers, Mahsa Niazi}
 \begin{document}
@@ -23,7 +31,7 @@ obj file to be read in polyscope
 adding elements to be read 
 
 \section{Short presentation of the algorithm}
-
+Presented in \cite{gajer00}. 
 
 \section{What data structure to keep on the implementation}
 \subsection{RDF  graphs}
@@ -47,4 +55,8 @@ Third step : polyscope structure
 \subsection{Final result}
 
 
+\printbibliography[
+heading=bibintoc,
+title={Bibliography}
+]
 \end{document}
