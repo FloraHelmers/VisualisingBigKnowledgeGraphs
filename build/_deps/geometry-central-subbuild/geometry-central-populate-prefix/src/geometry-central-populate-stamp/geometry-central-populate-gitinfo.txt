@@ -1,0 +1,3 @@
+repository='https://github.com/nmwsharp/geometry-central.git'
+module=''
+tag='origin'

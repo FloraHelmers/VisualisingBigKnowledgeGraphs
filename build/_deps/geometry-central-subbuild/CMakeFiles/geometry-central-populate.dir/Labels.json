@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/CMakeFiles/geometry-central-populate"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/CMakeFiles/geometry-central-populate.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/CMakeFiles/geometry-central-populate-complete.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-build.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-configure.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-download.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-install.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-patch.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-test.rule"
+		},
+		{
+			"file" : "/home/flora/ecole/CGDI_digital_imaging/CGDI-Practicals/build/_deps/geometry-central-subbuild/geometry-central-populate-prefix/src/geometry-central-populate-stamp/geometry-central-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"geometry-central-populate"
+		],
+		"name" : "geometry-central-populate"
+	}
+}

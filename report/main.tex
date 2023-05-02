@@ -4,6 +4,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{biblatex}
+
+\usepackage{mathbbol}
 \addbibresource{biblio.bib}
 \bibliography{biblio}
 
@@ -50,6 +52,57 @@ First step : store them in vector<int>.
 Second step: optimize with malloc
 
 Third step : polyscope structure 
+
+\section{The grip algorithm}
+
+\subsection{The filtration}
+There are two filtrations proposed in the article. 
+The first is the Center Graph filtration (CG) and the second is the maximal independent set filtration.
+Due to time constraints, we implemented the first but not the second. 
+
+Both necessitates call the graph distance. Therefore the Bellman Ford algorithm is applied on the graph as a part of preprocessing. 
+
+The construction of the filtration sets is recursive.
+First element of $V_{k}$ is chosen randomly. 
+Then the farthest element from the set is added at each iteration. 
+We define the farthest element from the set as 
+$argmax_{u \in G} dist(u, V_{k})$
+where the distance to a set is defined as $dist(u, V_{k}) = min_{v \in V_{k}} dist(u, v)$
+it can be found in O($ max(|V_{k}|, |V|)$). 
+
+An optimization can be added which is based on the idea that vertices are selected in exactly one set. Instead of iterating on all vertices in the function getFarthestVertex, we iterate only on the ones that have not been selected yet. TODO
+
+\subsection{Find the initial position}
+To do so we use graph distance to map it on the Euclidean space \mathbb{R}. The idea is to keep the equidistance to the three closest nodes as described in \cite{gajer00}. 
+We adapt it to 3D space. 
+In 3D, two spheres can have 4 intersections points (to be proven).
+As proposed in \cite{gajer00},  we find them by solving the three equations : 
+$dist_{R}(u, t) = dist_{G}(u, t)$
+$dist_{R}(v, t) = dist_{G}(v, t)$
+
+The method to solve these quadratic equations is ?? 
+
+TODO
+
+Then we sekect one point from each solution such that the distance between them is minimal (how to define that). 
+def 1 : $distmin(A, B, C) = argmin_{a \in A, b \in B, c \in C}  dist(a, b) + dist(b, c) + dist(c, d)$
+check problematic cases : what if we don't have a triangle.
+because we have as hyp, that the points are all belonging to a sphere with different center. Then we have a clean triangle. 
+
+
+Note: the positions are computed in float, and then we add the right granularity when creating the OBJ file. The diameter is there a useful parameter. 
+
+Then we take the barycenter of each element. 
+
+
+\paragraph{Finding closest neighbours}
+We do a tri by insertion. 
+The most ideal would be to have a liste chainée in order to introduce the element without needing to copy anything. 
+TODO : either find a preimplemented structure or DIY
+
+
+
+
 
 
 \subsection{Final result}
