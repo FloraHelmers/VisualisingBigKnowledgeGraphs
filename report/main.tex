@@ -53,7 +53,15 @@ Second step: optimize with malloc
 
 Third step : polyscope structure 
 
+
+
 \section{The grip algorithm}
+
+\subsection{The preprocessing : computing the distances in the graph}
+The function $dist_{G}$ is called many times in the algorithm. At least one time for every vertices. Therefore, it is necessary to have the matrix of the distances of all pair of vertices. In order to do so, we need to store the values.In order to divide the size of storage by two, we only the store the superior triangle of the matrix. 
+In order to compute the distances, we use the Floyd-Warshall algorithm in $O(nbVertices^3)$. We could optimise this computation by assuming that knowledge graph are sparses, and by using Johnson's algorithm.  
+
+For Floyd Warshall algorithm, we use the macro INT_MAX instead of defining a type for infinity. INT_MAX equals 2,147,483,647. It reminds that since vertices are int, their number is limited to 2M. This is a hint that the algorithm can't be scaled to medium knowledge graphs (where the number of triples is between 1M and 100M triples). 
 
 \subsection{The filtration}
 There are two filtrations proposed in the article. 
@@ -94,6 +102,22 @@ Note: the positions are computed in float, and then we add the right granularity
 
 Then we take the barycenter of each element. 
 
+To compute the intersection between two spheres $\mathcal{S}_{u} = \mathcal{S}(u, r_{u})$ and $\mathcal{S}_{v} = \mathcal{S}(v, r_{v})$ where $u$ and $v$ are in $\mathbb{R}^3$ :
+we want to find the points (x, y, z) in \mathbb{R}^{3} such that it belongs to \mathcal{S}_{u} and \mathcal{S}_{v}. 
+A point belongs to \mathcal{S}_{u} iff : 
+$ (x-u_{x})^2 + (y - u_{y})^2 + (z - u_{z})^2 = r_{u}$
+which is equivalent to \\
+$x^2+ y^2+z^2 - 2 (x * u_{x} + y * u_{y} + z * u_{z}) = r_{u} - ||u||$
+Same for $\mathcal{S}_v$.  
+By subtracting the equations for $\mathcal{S}_u$ and $\mathcal{S}_v$, we obtain the equation of a plane. 
+equation of a plane : 
+$x(u_{x} - v_{x}) + y (u_{y} - v_{y}) + z (u_{z} - v_{z}) = \frac{1}{2} (r_{v} - ||v|| - r_{u} + ||u||)$
+When knowing x and y, we can compute z. (Isn't it a problem in terms of conditions?)
+
+Since we are in a plane, we can go back to the case where we had two 2D circles.  
+https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect proposition
+
+an approximation
 
 \paragraph{Finding closest neighbours}
 We do a tri by insertion. 

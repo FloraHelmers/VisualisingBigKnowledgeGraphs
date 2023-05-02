@@ -1,7 +1,6 @@
 #include <vector>
 
 
-
 typedef int Vertex; 
 typedef  struct{
     int nbVertices; 
@@ -10,15 +9,29 @@ typedef  struct{
 
 } DistanceMatrix, *pDistanceMatrix ;
 
-DistanceMatrix * initDistanceMatrix(){
+
+
+DistanceMatrix * initDistanceMatrix(std::vector<std::vector<int>> adjacencyLists, int nbVertices){
     //TODO
+    std::vector<std::vector> m; 
+
+    for (int i = 0; i < nbVertices; i++){
+        std::vector<int> v;
+        adjacency
+        for (j = 0; j < i; j++){
+            
+        } 
+    }
     //read the graph
     //create the bellman ford matrix 
     return NULL;
 }
 
 int getGraphDistance(Vertex i, Vertex j, DistanceMatrix* mdist){
-        if (i <= -1 || j <= -1){
+        if (j < i){
+            return getGraphDistance(j, i, mdist); 
+        }
+        if (i <= -1 || j >= mdist->nbVertices){
             return mdist->diameter + 1; 
         }
         return mdist->m[i][j]; 
@@ -68,12 +81,12 @@ myPoint getBarycenter(myPoint a, myPoint b, myPoint c){
     return myPoint {x, y, z}; 
 }
 
-void insertionClosestVertices(Vertex vinsert, Vertex v,  vector<Vertex>* vect, int sizeVect, DistanceMatrix* dist, int sizevect){
-    //TODO
+void insertionClosestVertices(Vertex vinsert, Vertex v,  vector<Vertex>* vect, int sizeVect, DistanceMatrix* dist){
+    //TODO check
     //en mode insertion à bulle
     //we consider that the first one is the closest
-    if (getGraphDistance(vinsert, v, dist) < getGraphDistance(v, vect[sizevect -1], dist)){
-        vect[sizevect-1] = vinsert; 
+    if (getGraphDistance(vinsert, v, dist) < getGraphDistance(v, vect[sizeVect -1], dist)){
+        vect[sizeVect-1] = vinsert; 
         int i = sizevect -1; 
         while (i > 0 && getGraphDistance(vect[i] < vect[i-1], dist)){
             Vertex temp = vect[i]; 
@@ -81,22 +94,25 @@ void insertionClosestVertices(Vertex vinsert, Vertex v,  vector<Vertex>* vect, i
             vect[i-1] = temp; 
             i --; 
         }
-
     }
 }
 
-vector<Vertex> getThreeClosestVertex(Vertex v, vector<Vertex> vertexSet, DistanceMatrix dist){
+vector<Vertex> getThreeClosestVertex(Vertex v, vector<Vertex> vertexSet, DistanceMatrix* dist){
     vector<Vertex> result = {-1, -1, -1};
-    float diameter = dist.diameter(); //TODO
-    vector<float> distances = {}
     for (auto u: vertexSet){
-        insertionClosestVertices(u, result, 3, dist); 
+        insertionClosestVertices(u, v, result, 3, dist); 
     }
     return result; 
 }
 
 vector<myPoint> computeTwoSpheresIntersection3D(myPoint u, float radiusU, myPoint v, float radiusV){
     //TODO maths 
+    if (distance(u, v) <= radiusU + radiusV){
+        //unique solution meme si improvisée dans le cas ou les deux boules sont trop loin
+        return (u+v)/2; //won't work
+    } else {
+        
+    }
 }
 
 
