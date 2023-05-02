@@ -1,0 +1,3 @@
+/home/lip/CGDI/visualisator/CMakeFiles/visualisation.dir
+/home/lip/CGDI/visualisator/CMakeFiles/edit_cache.dir
+/home/lip/CGDI/visualisator/CMakeFiles/rebuild_cache.dir
