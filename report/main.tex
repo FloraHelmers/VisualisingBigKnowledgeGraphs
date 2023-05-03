@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{biblatex}
-
+\usepackage{graphicx}
 \usepackage{mathbbol}
 \addbibresource{biblio.bib}
 \bibliography{biblio}
@@ -21,16 +21,34 @@ huge graphs
 visualisation (limits of 2D)
 
 
+
+Increasing number of datasets made out if graphs : DBpedia, ....
+
+Some languages enable to query them like Sparql. 
+
+Not accessible to many people (need to connect to the endpoint , and query the language. 
+
+But the principal is quite simple : each entity can be linked to another by a predicate. For example in the linkedimdb there are 85k+ movies with the links between actors and realisator. 
+What is interesting would be to explore the nodes and their connexions on an interactive map. It would help for instance to visualize better.
+
+So the goal is to create a visually pleasing graph on a 3D. 
+3D is not often used in visualisation, as it doesn't facilitates the sharing of the picture. But since we have polyscope at our disposal it helps to generate easily a 3D map. 
+
+Many algorithms exist to draw graphs in 2D. But far less exist to draw large graphs in 3D. Therefore we use the GRIP algorithm proposed by Gajer and Kobourov in \cite{gajer00}.that was conceived for graphs of size 30k nodes.  
+
+
 \section{Structure of the code}
-rdf graph
--> 
-structure of graphs
--> 
-layout = (obj file )
--> 
-obj file to be read in polyscope
--> 
-adding elements to be read 
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{process.png}
+    \caption{Overview of the process}
+\end{figure}
+
+The original format of the file is the one of the knowledge graph, which is a triple (subject, object, predicate). There exist many serialisation format to express these triples. But for us, it means that the construction of the graph will be at least linear in the number of triple. Small datasets are made of less than 100k triples. Transforming it in the numeric format is possible, if we put the limit of INT\textunderscore MAX, else we could consider using the type double. We store the graph in the form of adjacency lists. If there are several edges between a pair of vertices, we consider them has being one, because we can play on this parameter afterward in the visualisation. 
+
+
+
+Then 
 
 \section{Short presentation of the algorithm}
 Presented in \cite{gajer00}. 
@@ -132,6 +150,11 @@ TODO : either find a preimplemented structure or DIY
 
 \subsection{Final result}
 
+
+
+\section{Future work}
+First debugging the code.
+Then playing on the initial matrix. Eg on the initial bellman ford make a weight on the matrices depending on the value of the predicates they have. 
 
 \printbibliography[
 heading=bibintoc,
