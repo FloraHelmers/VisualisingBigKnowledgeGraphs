@@ -1,3 +1,5 @@
+#include <bits/stdc++.h>
+using namespace std;
 #include <vector>
 
 
@@ -14,15 +16,25 @@ typedef  struct{
 DistanceMatrix * initDistanceMatrix(std::vector<std::vector<int>> adjacencyLists, int nbVertices){
     //TODO
     std::vector<std::vector> m; 
-
-    for (int i = 0; i < nbVertices; i++){
-        std::vector<int> v;
-        adjacency
-        for (j = 0; j < i; j++){
-            
-        } 
-    }
     //read the graph
+    for (int i = 0; i < nbVertices; i++){
+        std::vector<int> v = (i, INT_MAX);
+        for (auto l : adjacencyLists[i]){
+            v[l] = 1; 
+        }
+        m.push_back(v); 
+    }
+
+    // Floyd-Warshall
+    for (k = 0; k < nbVertices; k++) {
+        for (i = 0; i < nbVertices; i++) {
+            for (j = 0; j < nV; j++) {
+                if (m[i][k] + m[k][j] < m[i][j])
+                    m[i][j] = m[i][k] + m[k][j];
+            }
+        }
+    }
+    
     //create the bellman ford matrix 
     return NULL;
 }
