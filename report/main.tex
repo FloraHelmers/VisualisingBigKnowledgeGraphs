@@ -39,19 +39,21 @@ Many algorithms exist to draw graphs in 2D. But far less exist to draw large gra
 
 \section{Structure of the code}
 
-\begin{figure}
+\begin{figure}[h!]
     \includegraphics[width=\textwidth]{process.png}
     \caption{Overview of the process}
 \end{figure}
 
 The original format of the file is the one of the knowledge graph, which is a triple (subject, object, predicate). There exist many serialisation format to express these triples. But for us, it means that the construction of the graph will be at least linear in the number of triple. Small datasets are made of less than 100k triples. Transforming it in the numeric format is possible, if we put the limit of INT\textunderscore MAX, else we could consider using the type double. We store the graph in the form of adjacency lists. If there are several edges between a pair of vertices, we consider them has being one, because we can play on this parameter afterward in the visualisation. 
 
-
-
-Then 
+ 
 
 \section{Short presentation of the algorithm}
-Presented in \cite{gajer00}. 
+Presented in \cite{gajer00}.
+\begin{figure}[h!]
+    \includegraphics[width=10cm]{pseudo_algorithm.png}
+    \caption{Summary of the algorithm from \cite{gajer00}}
+\end{figure} 
 
 \section{What data structure to keep on the implementation}
 \subsection{RDF  graphs}

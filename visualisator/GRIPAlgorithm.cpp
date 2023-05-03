@@ -1,53 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 #include <vector>
+#include "DistanceMatrix.h"
 
 
 typedef int Vertex; 
-typedef  struct{
-    int nbVertices; 
-    int diameter; 
-    std::vector<std::vector<int>> m;
-
-} DistanceMatrix, *pDistanceMatrix ;
-
-
-
-DistanceMatrix * initDistanceMatrix(std::vector<std::vector<int>> adjacencyLists, int nbVertices){
-    //TODO
-    std::vector<std::vector> m; 
-    //read the graph
-    for (int i = 0; i < nbVertices; i++){
-        std::vector<int> v = (i, INT_MAX);
-        for (auto l : adjacencyLists[i]){
-            v[l] = 1; 
-        }
-        m.push_back(v); 
-    }
-
-    // Floyd-Warshall
-    for (k = 0; k < nbVertices; k++) {
-        for (i = 0; i < nbVertices; i++) {
-            for (j = 0; j < nV; j++) {
-                if (m[i][k] + m[k][j] < m[i][j])
-                    m[i][j] = m[i][k] + m[k][j];
-            }
-        }
-    }
-    
-    //create the bellman ford matrix 
-    return NULL;
-}
-
-int getGraphDistance(Vertex i, Vertex j, DistanceMatrix* mdist){
-        if (j < i){
-            return getGraphDistance(j, i, mdist); 
-        }
-        if (i <= -1 || j >= mdist->nbVertices){
-            return mdist->diameter + 1; 
-        }
-        return mdist->m[i][j]; 
-}
 
 typedef struct{float x, float y, float z} myPoint, *pmyPoint; // TODO check 
 
@@ -162,7 +119,14 @@ void findNeighbourhood(){}
 double computeLocalTemperature(int v){
     return 0.; 
 }
-void GRIPAlgorithm(int sizeFiltration){
+
+void savePositionToFile(){
+    //iterate over position in order to have 
+}
+
+void GRIPAlgorithm(int sizeFiltration, std::vector<std::vector<int>> adjacencyLists, int nbVertices){
+    DistanceMatrix m = initDistanceMatrix(adjacencyLists, nbVertices);
+
     createFiltration();
     startNbrs(); //? 
     for (int i = sizeFiltration; i >= 0; i--){
@@ -182,7 +146,9 @@ void GRIPAlgorithm(int sizeFiltration){
             pos[v] += disp[v]; 
         }
     }
+    free()
     //add the edges 
 
 }
+
 
