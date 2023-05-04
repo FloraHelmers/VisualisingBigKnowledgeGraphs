@@ -43,6 +43,43 @@ DistanceMatrix * initDistanceMatrix(std::vector<std::vector<int>> adjacencyLists
     return d;
 }
 
+int distanceVertexSet(Vertex v, VertexSet vset, DistanceMatrix* mdist){
+    int distance = getGraphDistance(v, -1, mdist);
+    for (auto u: vset){
+        int currentDistance = getGraphDistance(u, v, mdist); 
+        if (currentDistance < distance){
+            distance = currentDistance;
+        }
+    }
+    return distance; 
+}
+
+
+
+bool vectorContains(VertexSet v, Vertex i){
+    for (auto u : v){
+        if( u == i){
+            return true; 
+        }
+    }
+    return false ;
+}
+
+Vertex getFarthestVertex(VertexSet v, DistanceMatrix* m){
+    Vertex farthest = -1;
+    for (int i = 0; i < m->nbVertices; i++ ){
+        //a modifier 
+        if ((!vectorContains(v, i)) &&  (distanceVertexSet(i, v, m) < distanceVertexSet(farthest, v, m))){
+            farthest = i; 
+        }
+    }
+    return farthest; 
+}
+
+
+
+
+
 void freeDistanceMatrix(DistanceMatrix * d){
     free(d->m); 
     free(d); 

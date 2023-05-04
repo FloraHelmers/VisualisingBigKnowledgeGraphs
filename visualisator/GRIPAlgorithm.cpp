@@ -3,40 +3,48 @@ using namespace std;
 #include <vector>
 #include "DistanceMatrix.h"
 
-
+#ifndef VERTEX
+#define VERTEX
 typedef int Vertex; 
+typedef  std::vector<int> VertexSet; 
 
-typedef struct{float x, float y, float z} myPoint, *pmyPoint; // TODO check 
-
-typedef  std::vector<Vertex> VertexSet; //has the method contains
+#endif
+typedef struct{float x; float y;  float z;} myPoint, *pmyPoint; 
 
 /**** The filtration process ****/
-int distanceVertexSet(Vertex v, VertexSet vset, DistanceMatrix* mdist){
-    int distance = getGraphDistance(v, -1, mdist);
-    for (auto u: vset){
-        int currentDistance = getGraphDistance(u, v, mdist); 
-        if (currentDistance < distance){
-            distance = currentDistance;
-        }
+VertexSet createFiltrationVk(int c, DistanceMatrix* distm){
+    VertexSet v; 
+    srand((unsigned) time(NULL)); 
+    int firstVertex = rand() % distm->nbVertices; 
+    v.push_back(firstVertex); 
+    for(int i = 1; i < c; i++){
+        Vertex f = getFarthestVertex(v, distm); 
+        v.push_back(f);
     }
-    return distance; 
+    return v; 
 }
 
-
-
-Vertex getFarthestVertex(VertexSet v, DistanceMatrix* m){
-    Vertex farthest = -1;
-    for (int i = 0; i < m.nbVertices; i++ ){
-        if ((!v.contains(i)) &&  (getGraphDistance(i, v, m) < getGraphDistance(v, farthest, m))){
-            farthest = i; 
-        }
+VertexSet createFiltrationVi(vector<int> V, DistanceMatrix* distm, int nbToAdd){
+    VertexSet Vi; 
+    Vi.insert(V.begin(), V.begin(), V.end());
+    for(int i = 1; i < nbToAdd; i++){
+        Vertex f = getFarthestVertex(Vi, distm); 
+        Vi.push_back(i);
     }
-    return i; 
+    return Vi; 
 }
 
-
-void createFiltration(){
-    //TODO
+vector<vector<int>> createFiltration(int sizeFiltration, DistanceMatrix * distm, int c){
+    vector<vector<int>> filtration; 
+    filtration.push_back(createFiltrationVk(c, distm));
+    int nbNotAssigned = distm->nbVertices - c;  
+    int x = (int) exp((log(distm->nbVertices/c)/(sizeFiltration+1))); //to check
+    for (int i = 1; i < sizeFiltration -1; i++){
+        int nbToAdd = pow(x, i-1) * c; 
+        filtration.push_back(createFiltrationVi(filtration[i-1], distm, nbToAdd));
+        nbNotAssigned -= nbToAdd; 
+    }
+    filtration.push_back(createFiltrationVi(filtration[sizeFiltration -1], distm, nbNotAssigned));
 }
 
 
@@ -50,14 +58,30 @@ myPoint getBarycenter(myPoint a, myPoint b, myPoint c){
     return myPoint {x, y, z}; 
 }
 
-void insertionClosestVertices(Vertex vinsert, Vertex v,  vector<Vertex>* vect, int sizeVect, DistanceMatrix* dist){
+myPoint getPointLinearCombination(myPoint a, myPoint b, float la, float lb){
+    float x = (la * a.x + lb * b.x); 
+    float y = la* a.y + b.y *lb; 
+    float z = la* a.z + b.z * lb;
+    return myPoint {x, y, z}; 
+}
+
+float getPointScalarProduct(myPoint a, myPoint b){
+    float x = a.x * b.x + a.y * b.y + a.z * b.z;
+    return x; 
+}
+
+
+
+
+
+void insertionClosestVertices(Vertex vinsert, Vertex v,  vector<int> vect, int sizeVect, DistanceMatrix* dist){
     //TODO check
     //en mode insertion à bulle
     //we consider that the first one is the closest
     if (getGraphDistance(vinsert, v, dist) < getGraphDistance(v, vect[sizeVect -1], dist)){
         vect[sizeVect-1] = vinsert; 
-        int i = sizevect -1; 
-        while (i > 0 && getGraphDistance(vect[i] < vect[i-1], dist)){
+        int i = sizeVect -1; 
+        while (i > 0 && (getGraphDistance(vect[i], v, dist) < getGraphDistance(vect[i-1], v, dist))){
             Vertex temp = vect[i]; 
             vect[i] = vect[i-1]; 
             vect[i-1] = temp; 
@@ -74,44 +98,25 @@ vector<Vertex> getThreeClosestVertex(Vertex v, vector<Vertex> vertexSet, Distanc
     return result; 
 }
 
-vector<myPoint> computeTwoSpheresIntersection3D(myPoint u, float radiusU, myPoint v, float radiusV){
-    //TODO maths 
-    if (distance(u, v) <= radiusU + radiusV){
-        //unique solution meme si improvisée dans le cas ou les deux boules sont trop loin
-        return (u+v)/2; //won't work
-    } else {
-        
-    }
+
+void initialiseFirstPositions(Vertex a, Vertex b, Vertex c, myPoint* pos, DistanceMatrix* distm){
+    pos[a] = (myPoint) {0, 0, 0}; 
+    pos[b] = (myPoint) {0, 0, getGraphDistance(a, b, distm)}; 
+    pos[c] = (myPoint) {getGraphDistance(a, c, distm), getGraphDistance(b, c, distm),  0}; 
 }
 
-
-
-myPoint findInitialPosition(Vertex v, vector<Vertex> vertexSet, DistanceMatrix dist){
+void findInitialPosition(Vertex v, vector<Vertex> vertexSet, DistanceMatrix* dist, myPoint* pos){
+    //on ne l'applique qu'à partir de la filtration V_k
     vector<Vertex> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
-    if (closestVertex.size() == 3 && closestVertex[2] != -1){
-        // then there are 3 closest Vertex
-        //TODO
-        
-    }
-    //case 2
-
-    //case 1 
-    
-
+    pos[v] = getBarycenter(pos[closestVertex[0]], pos[closestVertex[1]], pos[closestVertex[2]]);    
 }
+
+
 
 
 
 
 /**** Rest of it ****/
-void startNbrs(){}
-
-std::vector<int> getSetDifference(){
-    return {};
-}
-
-void findNeighbourhood(){}
-
 
 
 
@@ -120,35 +125,63 @@ double computeLocalTemperature(int v){
     return 0.; 
 }
 
-void savePositionToFile(){
-    //iterate over position in order to have 
-}
 
-void GRIPAlgorithm(int sizeFiltration, std::vector<std::vector<int>> adjacencyLists, int nbVertices){
-    DistanceMatrix m = initDistanceMatrix(adjacencyLists, nbVertices);
 
-    createFiltration();
-    startNbrs(); //? 
-    for (int i = sizeFiltration; i >= 0; i--){
 
-        for (auto v : getSetDifference()){
-            findNeighbourhood(); 
-            findInitialPosition(); 
+
+
+
+myPoint* GRIPAlgorithm(int sizeFiltration, std::vector<std::vector<int>> adjacencyLists, int nbVertices, int rounds){
+    DistanceMatrix* dm = initDistanceMatrix(adjacencyLists, nbVertices);
+    int c = 3; //ca facilite la vie
+    myPoint* pos = (myPoint*) malloc(sizeof(myPoint)*nbVertices); 
+    myPoint* disp = (myPoint*) malloc(sizeof(myPoint)*nbVertices);  
+    vector<vector<int>> filtration = createFiltration(sizeFiltration, dm, c);
+    
+
+    initialiseFirstPositions(filtration[0][0], filtration[0][1], filtration[0][2], pos, dm); 
+    for (int i = 1; i < sizeFiltration; i++){
+
+        for (auto v : filtration[i]){
+            VertexSet neighbours = getThreeClosestVertex(v, filtration[i], dm); 
+            findInitialPosition(v, neighbours, dm, pos); 
         }
     }
     for (int i = 0; i < rounds; i++){
-        for (auto v : V[i]){
+        for (auto v : filtration[i]){
+            VertexSet neighbours = getThreeClosestVertex(v, filtration[i], dm);
             heat[v] = computeLocalTemperature(v); 
-            disp[v] = scalar(heat[v].Fn(v, neighbours[v]));
-
+            disp[v] = getPointScalarProduct(heat[v], Fn(v, neighbours[v]));
         }
-        for (auto v : V[i]){
-            pos[v] += disp[v]; 
+        for (auto v : filtration[i]){
+            pos[v] = getPointLinearCombination(pos[v], disp[v], 1, 1); 
         }
     }
-    free()
+    freeDistanceMatrix(dm);
     //add the edges 
+    return pos; 
 
 }
 
 
+int roundingue(float f, int rounding){
+    return round(f*rounding);
+}
+
+void savePositionToFile(myPoint * pos, int nbVertices, string filename, int rounding){
+    // Create and open a text file
+    ofstream MyFile(filename);
+    for (int i = 0; i < nbVertices; i++){
+        MyFile << "P" << i << ", " << roundingue(pos[i].x, rounding) << ", " << roundingue(pos[i].y, rounding) << ", " << roundingue(pos[i].z, rounding) << endl; 
+    } 
+    MyFile.close(); 
+}
+
+void savePositionToObjFile(myPoint * pos, int nbVertices, string filename, int rounding){
+    // Create and open a text file
+    ofstream MyFile(filename);
+    for (int i = 0; i < nbVertices; i++){
+        MyFile << "v" << " " << roundingue(pos[i].x, rounding) << " " << roundingue(pos[i].y, rounding) << " " << roundingue(pos[i].z, rounding) << endl; 
+    } 
+    MyFile.close(); 
+}

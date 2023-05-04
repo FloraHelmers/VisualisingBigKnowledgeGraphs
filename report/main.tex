@@ -123,8 +123,8 @@ Note: the positions are computed in float, and then we add the right granularity
 Then we take the barycenter of each element. 
 
 To compute the intersection between two spheres $\mathcal{S}_{u} = \mathcal{S}(u, r_{u})$ and $\mathcal{S}_{v} = \mathcal{S}(v, r_{v})$ where $u$ and $v$ are in $\mathbb{R}^3$ :
-we want to find the points (x, y, z) in \mathbb{R}^{3} such that it belongs to \mathcal{S}_{u} and \mathcal{S}_{v}. 
-A point belongs to \mathcal{S}_{u} iff : 
+we want to find the points (x, y, z) in \mathbb{R}^{3} such that it belongs to $\mathcal{S}_{u}$ and $\mathcal{S}_{v}$. 
+A point belongs to $\mathcal{S}_{u}$ iff : 
 $ (x-u_{x})^2 + (y - u_{y})^2 + (z - u_{z})^2 = r_{u}$
 which is equivalent to \\
 $x^2+ y^2+z^2 - 2 (x * u_{x} + y * u_{y} + z * u_{z}) = r_{u} - ||u||$
@@ -133,6 +133,8 @@ By subtracting the equations for $\mathcal{S}_u$ and $\mathcal{S}_v$, we obtain 
 equation of a plane : 
 $x(u_{x} - v_{x}) + y (u_{y} - v_{y}) + z (u_{z} - v_{z}) = \frac{1}{2} (r_{v} - ||v|| - r_{u} + ||u||)$
 When knowing x and y, we can compute z. (Isn't it a problem in terms of conditions?)
+
+In Coope's article on the intersection of n sphère \cite{nsphere}, it can be seen that there are at most two points in the intersection between three sphere in $\mathbb{R}^3$. 
 
 Since we are in a plane, we can go back to the case where we had two 2D circles.  
 https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect proposition
@@ -155,7 +157,12 @@ TODO : either find a preimplemented structure or DIY
 
 
 \section{Future work}
-First debugging the code.
+
+\subsection{Memory optimisation}
+The memory taken by the adjacency matrix could be divided by 2.
+
+
+\subsection{Playing with the distances}
 Then playing on the initial matrix. Eg on the initial bellman ford make a weight on the matrices depending on the value of the predicates they have. 
 
 \printbibliography[
