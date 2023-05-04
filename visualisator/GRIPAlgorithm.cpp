@@ -107,7 +107,7 @@ void initialiseFirstPositions(Vertex a, Vertex b, Vertex c, myPoint* pos, Distan
 
 void findInitialPosition(Vertex v, vector<Vertex> vertexSet, DistanceMatrix* dist, myPoint* pos){
     //on ne l'applique qu'à partir de la filtration V_k
-    vector<Vertex> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
+    vector<int> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
     pos[v] = getBarycenter(pos[closestVertex[0]], pos[closestVertex[1]], pos[closestVertex[2]]);    
 }
 
@@ -119,10 +119,40 @@ void findInitialPosition(Vertex v, vector<Vertex> vertexSet, DistanceMatrix* dis
 /**** Rest of it ****/
 
 
+float distancePoint(myPoint a, myPoint b){
+    myPoint diff = getPointLinearCombination(a, b, 1, -1); 
+    return sqrt(getPointScalarProduct(diff, diff)); 
+}
 
+myPoint Fkk(Vertex v, VertexSet vertexSet, DistanceMatrix dist){
+    vector<int> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
+    myPoint res = (myPoint) {0, 0, 0}; 
+    for (int i = 0; i < 3; i++){
+        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); 
+        res = getPointScalarProduct(res, diff, 1, distancePoint(pos[u], pos[v])/getGraphDistance(u, v, dist) - 1); 
+    } 
+    return res; 
+}
+
+
+myPoint Ffr(Vertex v, VertexSet adjacencylist, VertexSet vertexSet, DistanceMatrix dist){
+    vector<int> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
+    myPoint res = (myPoint) {0, 0, 0}; 
+    for (int i = 0; i < 3; i++){
+        Vertex u = closestVertex[i]; 
+        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); 
+        res = getPointScalarProduct(res, diff, 1, pow(distancePoint(pos[u], pos[v]), 2)/getGraphDistance(u, v, dist) - 1); 
+    } 
+    for (auto u: adjacencylist){
+        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); 
+        res = getPointScalarProduct(res, diff, 1, pow(distancePoint(pos[u], pos[v]), -2));
+
+    }
+    return res; 
+}
 
 double computeLocalTemperature(int v){
-    return 0.; 
+    return 1; 
 }
 
 

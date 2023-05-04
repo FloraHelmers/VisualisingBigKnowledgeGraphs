@@ -36,7 +36,7 @@ The estetically pleasing layout are called force oriented. There exist many algo
 
 The original format of the file is the one of the knowledge graph (it's the name of the graph of data mentionned above). A knowledge graph is described by a triple (subject, object, predicate). There exist many serialisation format to express these triples. But for us, it means that the construction of the graph will be at least linear in the number of triple. Small datasets are made of less than 100k triples. Transforming it in the numeric format is possible, if we put the limit of INT\textunderscore MAX, else we could consider using the type double. We store the graph in the form of adjacency lists. If there are several edges between a pair of vertices, we consider them has being one, because we can play on this parameter afterward in the visualisation. 
 
-The code is splitted in two parts. The first one is the part of the algorithm written in c++. The second is the visualisation part written in python. This heterogeneity can be explained by the authors.
+The code is splitted in two parts. The first one is the part of the algorithm written in c++. The second is the visualisation part written in python. This heterogeneity can be explained by the preferences of the authors.
 
  
 
@@ -68,7 +68,7 @@ There are two filtrations proposed in the article.
 The first is the Center Graph filtration (CG) and the second is the maximal independent set filtration.
 Due to time constraints, we implemented the first but not the second. 
 
-Both necessitates call the graph distance. Therefore the Floyd-Warshall algorithm is applied on the graph as a part of preprocessing. 
+Both necessitates call the graph distance. Therefore we call the DistanceMatrix object that contains all the elements.  
 
 The construction of the filtration sets is recursive.
 First element of $V_{k}$ is chosen randomly. 
@@ -78,54 +78,30 @@ $argmax_{u \in G} dist(u, V_{k})$
 where the distance to a set is defined as $dist(u, V_{k}) = min_{v \in V_{k}} dist(u, v)$
 it can be found in O($ max(|V_{k}|, |V|)$). 
 
-An optimization can be added which is based on the idea that vertices are selected in exactly one set. Instead of iterating on all vertices in the function getFarthestVertex, we iterate only on the ones that have not been selected yet. TODO
+An optimization can be added which is based on the idea that vertices are selected in exactly one set. Instead of iterating on all vertices in the function getFarthestVertex, we iterate only on the ones that have not been selected yet. Also another structure than a matrix could be used, maybe based on a graph, in order to access the furthest in O(1). 
 
 \subsection{Find the initial position}
 To do so we use graph distance to map it on the Euclidean space \mathbb{R}. The idea is to keep the equidistance to the three closest nodes as described in \cite{gajer00}. 
-We adapt it to 3D space. 
-In 3D, two spheres can have 4 intersections points (to be proven).
-As proposed in \cite{gajer00},  we find them by solving the three equations : 
-$dist_{R}(u, t) = dist_{G}(u, t)$
-$dist_{R}(v, t) = dist_{G}(v, t)$
+To do so in 2D the authors prefer to divide the intersection in three problems. Their idea is to take all the intersections of two spheres out of three, and then select the barycenter.
 
-The method to solve these quadratic equations is ?? 
+It means solving three times the least square problem : \\
+$dist_{R}(u, t) = dist_{G}(u, t)$ and \\
+$dist_{R}(v, t) = dist_{G}(v, t)$ \\
+Then solving the problem. 
 
-TODO
+In 3D, we see that we have three variables and only two equations. So the result would either be no solutions or an infinity. (Even though I thought about taking  the intersection plane and then doing some projections). 
 
-Then we sekect one point from each solution such that the distance between them is minimal (how to define that). 
-def 1 : $distmin(A, B, C) = argmin_{a \in A, b \in B, c \in C}  dist(a, b) + dist(b, c) + dist(c, d)$
-check problematic cases : what if we don't have a triangle.
-because we have as hyp, that the points are all belonging to a sphere with different center. Then we have a clean triangle. 
-
-
-Note: the positions are computed in float, and then we add the right granularity when creating the OBJ file. The diameter is there a useful parameter. 
-
-Then we take the barycenter of each element. 
-
-To compute the intersection between two spheres $\mathcal{S}_{u} = \mathcal{S}(u, r_{u})$ and $\mathcal{S}_{v} = \mathcal{S}(v, r_{v})$ where $u$ and $v$ are in $\mathbb{R}^3$ :
-we want to find the points (x, y, z) in \mathbb{R}^{3} such that it belongs to $\mathcal{S}_{u}$ and $\mathcal{S}_{v}$. 
-A point belongs to $\mathcal{S}_{u}$ iff : 
-$ (x-u_{x})^2 + (y - u_{y})^2 + (z - u_{z})^2 = r_{u}$
-which is equivalent to \\
-$x^2+ y^2+z^2 - 2 (x * u_{x} + y * u_{y} + z * u_{z}) = r_{u} - ||u||$
-Same for $\mathcal{S}_v$.  
-By subtracting the equations for $\mathcal{S}_u$ and $\mathcal{S}_v$, we obtain the equation of a plane. 
-equation of a plane : 
-$x(u_{x} - v_{x}) + y (u_{y} - v_{y}) + z (u_{z} - v_{z}) = \frac{1}{2} (r_{v} - ||v|| - r_{u} + ||u||)$
-When knowing x and y, we can compute z. (Isn't it a problem in terms of conditions?)
-
-In Coope's article on the intersection of n sphère \cite{nsphere}, it can be seen that there are at most two points in the intersection between three sphere in $\mathbb{R}^3$. 
-
-Since we are in a plane, we can go back to the case where we had two 2D circles.  
-https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect proposition
-
-an approximation
+So at the end the idea is to find the intersection of three spheres in 3D. This happens to be a complicated problem solved by Coope in \cite{nsphere}. There are at most two intersection points of two spheres in 3D. So this wouldn't be easy to compute. Therefore we prefered taking the barycenter of the points. This could be enhanced by having the weights of the distance in the graph. 
 
 
 \paragraph{Finding closest neighbours}
-We do a bubble tri. 
+We do a bubble tri to insert the closest neighbours in the vector. 
+
+\subsubsection{Computing the temperature}
+We didn't had the time to implement it.
 
 
+\section{What we should have obtained}
 
 \section{Future work}
 This project has allow us to think about diverse problems. A geometrical problem : the intersection of the spheres. But also technical problems like what data structure to use when we have in mind the visualisation of huge graphs.
