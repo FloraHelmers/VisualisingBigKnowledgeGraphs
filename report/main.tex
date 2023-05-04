@@ -10,31 +10,21 @@
 \bibliography{biblio}
 
 
-\title{Visualisation of big knowledge graphs}
+\title{Visualisation of big graphs}
 \author{Flora Helmers, Mahsa Niazi}
 \begin{document}
 \maketitle
 
 \section*{Introduction}
-Posing the problem:
-huge graphs 
-visualisation (limits of 2D)
+Linked data is a concept that is extending itself nowadays. Now data is not only stored in tables, but also in the form of a graph. One example could be a social network, described by its users (the nodes) and their connexions (the edges). Data scientists can extract information from these datasets, by connnecting their machine to specific endpoints and using the domain-specific language SPARQL, which is like SQL but for graphs. This make these datasets unaccessible to the average person. Therefore we would like to offer a visualisation of these datasets, in order to allow people to explore them. 
 
+The graphs are huge. A small one is defined as having less than 100k edges. Therefore a standard library, such as networkx in python, cannot be used.
+The graphs are also non planar, which make the visualisation in 2D not very readable. 
+Also having a 3D representation allows a better immersion inside the data and the possibility to follow each of the edges outgoing from a node.
 
+So the goal is to create a visually pleasing graph on a 3D map. This means defining a layout, ie the position of each nodes on $\mathbb{R}^3$. After that we can simply use the c++ library polyscope to visualize them. 
 
-Increasing number of datasets made out if graphs : DBpedia, ....
-
-Some languages enable to query them like Sparql. 
-
-Not accessible to many people (need to connect to the endpoint , and query the language. 
-
-But the principal is quite simple : each entity can be linked to another by a predicate. For example in the linkedimdb there are 85k+ movies with the links between actors and realisator. 
-What is interesting would be to explore the nodes and their connexions on an interactive map. It would help for instance to visualize better.
-
-So the goal is to create a visually pleasing graph on a 3D. 
-3D is not often used in visualisation, as it doesn't facilitates the sharing of the picture. But since we have polyscope at our disposal it helps to generate easily a 3D map. 
-
-Many algorithms exist to draw graphs in 2D. But far less exist to draw large graphs in 3D. Therefore we use the GRIP algorithm proposed by Gajer and Kobourov in \cite{gajer00}.that was conceived for graphs of size 30k nodes.  
+The estetically pleasing layout are called force oriented. There exist many algorithms to draw graphs in 2D. But far less exist to draw large graphs in 3D. Therefore we use the GRIP algorithm proposed by Gajer and Kobourov in \cite{gajer00} that was conceived for graphs of size 30k nodes. It is not a lot, but it already allows to see interesting things.
 
 
 \section{Structure of the code}
@@ -44,51 +34,41 @@ Many algorithms exist to draw graphs in 2D. But far less exist to draw large gra
     \caption{Overview of the process}
 \end{figure}
 
-The original format of the file is the one of the knowledge graph, which is a triple (subject, object, predicate). There exist many serialisation format to express these triples. But for us, it means that the construction of the graph will be at least linear in the number of triple. Small datasets are made of less than 100k triples. Transforming it in the numeric format is possible, if we put the limit of INT\textunderscore MAX, else we could consider using the type double. We store the graph in the form of adjacency lists. If there are several edges between a pair of vertices, we consider them has being one, because we can play on this parameter afterward in the visualisation. 
+The original format of the file is the one of the knowledge graph (it's the name of the graph of data mentionned above). A knowledge graph is described by a triple (subject, object, predicate). There exist many serialisation format to express these triples. But for us, it means that the construction of the graph will be at least linear in the number of triple. Small datasets are made of less than 100k triples. Transforming it in the numeric format is possible, if we put the limit of INT\textunderscore MAX, else we could consider using the type double. We store the graph in the form of adjacency lists. If there are several edges between a pair of vertices, we consider them has being one, because we can play on this parameter afterward in the visualisation. 
+
+The code is splitted in two parts. The first one is the part of the algorithm written in c++. The second is the visualisation part written in python. This heterogeneity can be explained by the authors.
 
  
 
-\section{Short presentation of the algorithm}
+
+\section{Visualisation}
+With a random layout, the graph still can be estetically pleasing with great chrome effect. 
+\begin{figure}[h!]
+    \includegraphics[width=10cm]{random_generator.png}
+\end{figure}
+The structure used in polyscope is the curve network one.
+
+\section{The grip algorithm}
+
 Presented in \cite{gajer00}.
 \begin{figure}[h!]
     \includegraphics[width=10cm]{pseudo_algorithm.png}
     \caption{Summary of the algorithm from \cite{gajer00}}
 \end{figure} 
 
-\section{What data structure to keep on the implementation}
-\subsection{RDF  graphs}
-
-\subsection{Intermediary structures}
-several elements need to be stored every time 
-- the filtration (store set of elements)
-- the neighbors
-- the positions 
-- the local temperature `heat` 
-//questions where to store them ? directly accessible or in a file to be written
-
-First step : store them in vector<int>. 
-    for the filtration
-
-Second step: optimize with malloc
-
-Third step : polyscope structure 
-
-
-
-\section{The grip algorithm}
-
 \subsection{The preprocessing : computing the distances in the graph}
 The function $dist_{G}$ is called many times in the algorithm. At least one time for every vertices. Therefore, it is necessary to have the matrix of the distances of all pair of vertices. In order to do so, we need to store the values.In order to divide the size of storage by two, we only the store the superior triangle of the matrix. 
 In order to compute the distances, we use the Floyd-Warshall algorithm in $O(nbVertices^3)$. We could optimise this computation by assuming that knowledge graph are sparses, and by using Johnson's algorithm.  
 
-For Floyd Warshall algorithm, we use the macro INT_MAX instead of defining a type for infinity. INT_MAX equals 2,147,483,647. It reminds that since vertices are int, their number is limited to 2M. This is a hint that the algorithm can't be scaled to medium knowledge graphs (where the number of triples is between 1M and 100M triples). 
+For Floyd Warshall algorithm, we use the macro INT\underscore MAX instead of defining a type for infinity. INT\underscore MAX equals 2,147,483,647. It reminds that since vertices are int, their number is limited to 2M. This is a hint that the algorithm can't be scaled to medium knowledge graphs (where the number of triples is between 1M and 100M triples). 
+
 
 \subsection{The filtration}
 There are two filtrations proposed in the article. 
 The first is the Center Graph filtration (CG) and the second is the maximal independent set filtration.
 Due to time constraints, we implemented the first but not the second. 
 
-Both necessitates call the graph distance. Therefore the Bellman Ford algorithm is applied on the graph as a part of preprocessing. 
+Both necessitates call the graph distance. Therefore the Floyd-Warshall algorithm is applied on the graph as a part of preprocessing. 
 
 The construction of the filtration sets is recursive.
 First element of $V_{k}$ is chosen randomly. 
@@ -143,27 +123,22 @@ an approximation
 
 
 \paragraph{Finding closest neighbours}
-We do a tri by insertion. 
-The most ideal would be to have a liste chainée in order to introduce the element without needing to copy anything. 
-TODO : either find a preimplemented structure or DIY
-
-
-
-
-
-
-\subsection{Final result}
+We do a bubble tri. 
 
 
 
 \section{Future work}
+This project has allow us to think about diverse problems. A geometrical problem : the intersection of the spheres. But also technical problems like what data structure to use when we have in mind the visualisation of huge graphs.
 
-\subsection{Memory optimisation}
-The memory taken by the adjacency matrix could be divided by 2.
+
+\subsection{Time and emory optimisation}
+The memory taken by the adjacency matrix could be divided by 2. Our adaptation of the algorithm doesn't reach the lower bound expected. 
+
+The time could be also rethought by using parallel programmation. 
 
 
 \subsection{Playing with the distances}
-Then playing on the initial matrix. Eg on the initial bellman ford make a weight on the matrices depending on the value of the predicates they have. 
+Then playing on the initial matrix. Eg on the initial Floyd-Warshall make a weight on the matrices depending on the value of the predicates they have. These could allow to vary the perspectives.
 
 \printbibliography[
 heading=bibintoc,
