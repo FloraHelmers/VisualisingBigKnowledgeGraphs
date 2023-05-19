@@ -133,12 +133,14 @@ myPoint vectorialProduct(myPoint u, myPoint v){
                        u.x * v.y - u.y * v.x     };
 }
 
-myPoint Fn(myPoint a, myPoint b, myPoint c){
+myPoint Fn_0(myPoint a, myPoint b, myPoint c){
     myPoint vn = vectorialProduct((getPointLinearCombination(a, b, -1, 1)), 
                                    getPointLinearCombination(b, c, -1, 1));
     double norm = getPointScalarProduct(vn, vn); 
     myPoint v = getPointLinearCombination(vn, (myPoint) {0, 0, 0}, 1/norm, 0); 
+    return v; 
 }
+
 
 
 myPoint Fkk(Vertex v, VertexSet vertexSet, DistanceMatrix* dist, myPoint* pos){
