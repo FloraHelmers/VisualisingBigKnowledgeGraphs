@@ -119,33 +119,50 @@ void findInitialPosition(Vertex v, vector<Vertex> vertexSet, DistanceMatrix* dis
 /**** Rest of it ****/
 
 
+
+
+
 float distancePoint(myPoint a, myPoint b){
     myPoint diff = getPointLinearCombination(a, b, 1, -1); 
     return sqrt(getPointScalarProduct(diff, diff)); 
 }
 
-myPoint Fkk(Vertex v, VertexSet vertexSet, DistanceMatrix dist){
+myPoint vectorialProduct(myPoint u, myPoint v){
+    return (myPoint) { u.y * v.z - u.z * v.y,
+                       u.z *v.x - u.x * v.z,
+                       u.x * v.y - u.y * v.x     };
+}
+
+myPoint Fn(myPoint a, myPoint b, myPoint c){
+    myPoint vn = vectorialProduct((getPointLinearCombination(a, b, -1, 1)), 
+                                   getPointLinearCombination(b, c, -1, 1));
+    double norm = getPointScalarProduct(vn, vn); 
+    myPoint v = getPointLinearCombination(vn, (myPoint) {0, 0, 0}, 1/norm, 0); 
+}
+
+
+myPoint Fkk(Vertex v, VertexSet vertexSet, DistanceMatrix* dist, myPoint* pos){
     vector<int> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
     myPoint res = (myPoint) {0, 0, 0}; 
-    for (int i = 0; i < 3; i++){
-        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); 
-        res = getPointScalarProduct(res, diff, 1, distancePoint(pos[u], pos[v])/getGraphDistance(u, v, dist) - 1); 
+    for (auto u: closestVertex){
+        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); //soustraction
+        res = getPointLinearCombination(res, diff, 1, distancePoint(pos[u], pos[v])/getGraphDistance(u, v, dist) - 1); 
     } 
     return res; 
 }
 
 
-myPoint Ffr(Vertex v, VertexSet adjacencylist, VertexSet vertexSet, DistanceMatrix dist){
+myPoint Ffr(Vertex v, VertexSet adjacencylist, VertexSet vertexSet, DistanceMatrix* dist, myPoint* pos){
     vector<int> closestVertex = getThreeClosestVertex(v, vertexSet, dist); 
     myPoint res = (myPoint) {0, 0, 0}; 
     for (int i = 0; i < 3; i++){
         Vertex u = closestVertex[i]; 
-        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); 
-        res = getPointScalarProduct(res, diff, 1, pow(distancePoint(pos[u], pos[v]), 2)/getGraphDistance(u, v, dist) - 1); 
+        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); //soustraction
+        res = getPointLinearCombination(res, diff, 1, pow(distancePoint(pos[u], pos[v]), 2)/getGraphDistance(u, v, dist) - 1); 
     } 
     for (auto u: adjacencylist){
-        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); 
-        res = getPointScalarProduct(res, diff, 1, pow(distancePoint(pos[u], pos[v]), -2));
+        myPoint diff = getPointLinearCombination(pos[u], pos[v], 1, -1); //soustraction
+        res = getPointLinearCombination(res, diff, 1, pow(distancePoint(pos[u], pos[v]), -2));
 
     }
     return res; 
@@ -165,7 +182,8 @@ myPoint* GRIPAlgorithm(int sizeFiltration, std::vector<std::vector<int>> adjacen
     DistanceMatrix* dm = initDistanceMatrix(adjacencyLists, nbVertices);
     int c = 3; //ca facilite la vie
     myPoint* pos = (myPoint*) malloc(sizeof(myPoint)*nbVertices); 
-    myPoint* disp = (myPoint*) malloc(sizeof(myPoint)*nbVertices);  
+    myPoint* disp = (myPoint*) malloc(sizeof(myPoint)*nbVertices); 
+    double * heat = (double *) malloc(sizeof(double) * nbVertices);  
     vector<vector<int>> filtration = createFiltration(sizeFiltration, dm, c);
     
 
